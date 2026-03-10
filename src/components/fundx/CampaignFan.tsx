@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useState } from "react"
-import { useScroll, useTransform, motion } from "framer-motion"
+import { useScroll, useTransform, motion, useSpring } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -11,15 +11,31 @@ interface CampaignFanProps {
   deckSlotRef: React.RefObject<HTMLDivElement | null>
 }
 
-interface SideCardContentProps {
+interface SideCardProps {
   campaign: Campaign
   progress: number
+  tilt: "left" | "right"
 }
 
-function SideCardContent({ campaign, progress }: SideCardContentProps) {
+function getPageOffsetTop(el: HTMLElement): number {
+  let top = 0
+  let current: HTMLElement | null = el
+  while (current) {
+    top += current.offsetTop
+    current = current.offsetParent as HTMLElement | null
+  }
+  return top
+}
+
+function SideCard({ campaign, progress, tilt }: SideCardProps) {
+  const tiltClass = tilt === "left"
+    ? "xl:transform xl:-rotate-6 xl:origin-bottom-right xl:translate-x-6 hover:translate-x-0"
+    : "xl:transform xl:rotate-6 xl:origin-bottom-left xl:-translate-x-6 hover:translate-x-0"
+
   return (
-    <>
-      <div className="relative h-48 xl:h-1/2 bg-slate-100 overflow-hidden shrink-0">
+    <div className={`w-full xl:w-[300px] bg-white rounded-[2rem] shadow-soft-md border border-slate-100 overflow-hidden group hover:border-orange-200 transition-all duration-500 ease-out flex flex-col hover:z-30 hover:scale-105 hover:rotate-0 ${tiltClass}`}>
+      
+      <div className="relative h-48 bg-slate-100 overflow-hidden shrink-0">
         <Image
           src={campaign.image}
           alt={campaign.title}
@@ -56,81 +72,36 @@ function SideCardContent({ campaign, progress }: SideCardContentProps) {
           </div>
         </div>
       </div>
-    </>
-  )
-}
-
-function CenterCardContent() {
-  const hero = getHeroCampaign()
-  const progress = Math.min((hero.raised / hero.goal) * 100, 100)
-
-  return (
-    <>
-      <div className="absolute top-4 left-4 z-30 bg-gradient-tush text-white px-4 py-1 rounded-full text-xs font-bold shadow-soft-xl animate-pulse">
-        🔥 Top Trending
-      </div>
-      <div className="relative h-64 md:h-full md:w-5/12 bg-slate-100 overflow-hidden">
-        <Image
-          src={hero.image}
-          alt={hero.title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-700"
-        />
-      </div>
-      <div className="flex flex-col justify-between p-8 md:w-7/12 h-full bg-white">
-        <div className="pt-4">
-          <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3 tracking-tight group-hover:text-primary transition-colors">
-            {hero.title}
-          </h3>
-          <p className="text-slate-500 leading-relaxed mb-6 text-sm md:text-base">
-            {hero.description}
-          </p>
-        </div>
-        <div className="space-y-6">
-          <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-            <div
-              className="bg-gradient-tush h-full rounded-full shadow-[0_0_15px_rgba(255,107,74,0.4)]"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <div className="flex justify-between items-end">
-            <div>
-              <p className="text-xs text-slate-400 uppercase font-semibold mb-1">Raised</p>
-              <p className="text-3xl font-bold text-primary">${hero.raised.toLocaleString()}</p>
-            </div>
-            <Link href={`/campaigns/${hero.id}`}>
-              <Button className="h-12 rounded-xl px-8 bg-slate-900 text-white shadow-lg hover:bg-primary hover:shadow-glow transition-all duration-300">
-                Donate Now
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </>
+    </div>
   )
 }
 
 export function CampaignFan({ deckSlotRef }: CampaignFanProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [deckOffset, setDeckOffset] = useState(-600)
+  const deckRef = useRef<HTMLDivElement>(null)
+  const [deckOffset, setDeckOffset] = useState(0)
+  const [measured, setMeasured] = useState(false)
 
+  const hero = getHeroCampaign()
   const sideCampaigns = getSideCampaigns()
   const leftCard = sideCampaigns[0]
   const rightCard = sideCampaigns[1]
   const getProgress = (raised: number, goal: number) =>
     Math.min((raised / goal) * 100, 100)
 
-  // Measure exact pixel distance from Campaign container top to HeroDeckSlot
   useEffect(() => {
     function measure() {
-      if (!deckSlotRef.current || !containerRef.current) return
-      const slotRect = deckSlotRef.current.getBoundingClientRect()
-      const containerRect = containerRef.current.getBoundingClientRect()
-      // This is negative — the slot is above the container
-      setDeckOffset(slotRect.top - containerRect.top)
+      if (!deckSlotRef.current || !deckRef.current) return
+      const slotPageTop = getPageOffsetTop(deckSlotRef.current)
+      const deckPageTop = getPageOffsetTop(deckRef.current)
+      const CARD_HEIGHT = 420
+      const INITIAL_SCALE = 0.15
+      const scalingCompensation = (CARD_HEIGHT - CARD_HEIGHT * INITIAL_SCALE) / 2
+      const offset = slotPageTop - deckPageTop - scalingCompensation
+      setDeckOffset(offset)
+      setMeasured(true)
     }
-    // Wait for layout to settle
-    const t = setTimeout(measure, 100)
+    const t = setTimeout(measure, 200)
     window.addEventListener("resize", measure)
     return () => {
       clearTimeout(t)
@@ -143,27 +114,36 @@ export function CampaignFan({ deckSlotRef }: CampaignFanProps) {
     offset: ["start end", "end end"],
   })
 
-  // Deck travels from hero slot (deckOffset) to campaign center (0)
-  const deckY = useTransform(scrollYProgress, [0, 1], [deckOffset, 0])
+  // Smooth spring applied to raw scroll progress
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 60,
+    damping: 20,
+    restDelta: 0.001,
+  })
 
-  // Deck scales from tiny (0.15) to full size (1)
-  const deckScale = useTransform(scrollYProgress, [0, 1], [0.15, 1])
+  // Deck travels from hero slot to campaign center
+  const deckY = useTransform(smoothProgress, [0, 1], [deckOffset, 0])
+  const deckScale = useTransform(smoothProgress, [0, 1], [0.15, 1])
 
-  // Left card: peeks out slightly at start (-15px), fans to final position (-315px)
-  const leftX = useTransform(scrollYProgress, [0, 1], [-15, -315])
-  // Left card rotation: slight tilt at start, full tilt at end
-  const leftRotate = useTransform(scrollYProgress, [0, 1], [-3, -6])
+  // Left card — peeks out slightly at start, fans to final flex position
+  // At scale 1 the flex layout naturally places left card ~310px left of center
+  const leftX = useTransform(smoothProgress, [0, 1], [-100, 0])
+  const leftRotate = useTransform(smoothProgress, [0, 1], [-6, 0])
+  const leftZ = useTransform(smoothProgress, [0, 1], [15, 0])
 
-  // Right card: peeks out slightly at start (+15px), fans to final position (+315px)  
-  const rightX = useTransform(scrollYProgress, [0, 1], [15, 315])
-  const rightRotate = useTransform(scrollYProgress, [0, 1], [3, 6])
+  const rightX = useTransform(smoothProgress, [0, 1], [100, 0])
+  const rightRotate = useTransform(smoothProgress, [0, 1], [6, 0])
+  const rightZ = useTransform(smoothProgress, [0, 1], [15, 0])
+
+  // Center card sits on top at start (highest z), normalizes at end
+  const centerZ = useTransform(smoothProgress, [0, 1], [20, 10])
 
   // Heading fades in during second half
-  const headingOpacity = useTransform(scrollYProgress, [0.5, 1], [0, 1])
-  const headingY = useTransform(scrollYProgress, [0.5, 1], [40, 0])
+  const headingOpacity = useTransform(smoothProgress, [0.4, 0.8], [0, 1])
+  const headingY = useTransform(smoothProgress, [0.4, 0.8], [40, 0])
 
   return (
-    <div ref={containerRef} className="relative min-h-[520px]">
+    <div ref={containerRef} className="relative min-h-[600px]">
 
       {/* Heading */}
       <motion.div
@@ -178,38 +158,102 @@ export function CampaignFan({ deckSlotRef }: CampaignFanProps) {
         </p>
       </motion.div>
 
-      {/* Deck — all three cards absolutely stacked, then fanning out */}
+      {/* 
+        Deck wrapper — the entire flex layout is wrapped in a motion.div.
+        At scroll 0: tiny, translated up into hero, cards stacked via x/rotate transforms.
+        At scroll 1: full size, natural flex layout, transforms zeroed out.
+      */}
       <motion.div
-        style={{ y: deckY, scale: deckScale }}
-        className="relative flex justify-center items-center h-[420px]"
+        ref={deckRef}
+        style={{
+          y: measured ? deckY : 0,
+          scale: deckScale,
+          transformOrigin: "center center",
+        }}
+        className="flex flex-col xl:flex-row justify-center items-center xl:items-stretch gap-6 h-auto xl:h-[420px]"
       >
 
-        {/* Left card — starts peeking behind center, fans left */}
+        {/* Left card */}
         <motion.div
-          style={{ x: leftX, rotate: leftRotate, zIndex: 10 }}
-          className="absolute w-[300px] h-[420px] bg-white rounded-[2rem] shadow-soft-md border border-slate-100 overflow-hidden group hover:border-orange-200 flex flex-col"
+          style={{
+            x: leftX,
+            rotate: leftRotate,
+            zIndex: leftZ,
+            position: "relative",
+          }}
+          className="w-full xl:w-[300px] flex-shrink-0"
         >
-          <SideCardContent
+          <SideCard
             campaign={leftCard}
+            tilt="left"
             progress={getProgress(leftCard.raised, leftCard.goal)}
           />
         </motion.div>
 
-        {/* Center card — stays centered, always on top */}
+        {/* Center card */}
         <motion.div
-          style={{ zIndex: 20 }}
-          className="absolute w-[640px] h-[420px] bg-white rounded-[2rem] shadow-2xl border border-slate-100 hover:border-orange-200 flex flex-col md:flex-row overflow-hidden group"
+          style={{ zIndex: centerZ, position: "relative" }}
+          className="w-full max-w-3xl xl:flex-1"
         >
-          <CenterCardContent />
+          <div className="relative z-20 shadow-2xl rounded-[2rem] border border-slate-100 bg-white hover:border-orange-200 transition-all duration-300 flex flex-col md:flex-row overflow-hidden group h-full">
+            <div className="absolute top-4 left-4 z-30 bg-gradient-tush text-white px-4 py-1 rounded-full text-xs font-bold shadow-soft-xl animate-pulse">
+              🔥 Top Trending
+            </div>
+            <div className="relative h-64 md:h-full md:w-5/12 bg-slate-100 overflow-hidden">
+              <Image
+                src={hero.image}
+                alt={hero.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+            <div className="flex flex-col justify-between p-8 md:w-7/12 h-full bg-white">
+              <div className="pt-4">
+                <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3 tracking-tight group-hover:text-primary transition-colors">
+                  {hero.title}
+                </h3>
+                <p className="text-slate-500 leading-relaxed mb-6 text-sm md:text-base">
+                  {hero.description}
+                </p>
+              </div>
+              <div className="space-y-6">
+                <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                  <div
+                    className="bg-gradient-tush h-full rounded-full shadow-[0_0_15px_rgba(255,107,74,0.4)]"
+                    style={{ width: `${getProgress(hero.raised, hero.goal)}%` }}
+                  />
+                </div>
+                <div className="flex justify-between items-end">
+                  <div>
+                    <p className="text-xs text-slate-400 uppercase font-semibold mb-1">Raised</p>
+                    <p className="text-3xl font-bold text-primary">
+                      ${hero.raised.toLocaleString()}
+                    </p>
+                  </div>
+                  <Link href={`/campaigns/${hero.id}`}>
+                    <Button className="h-12 rounded-xl px-8 bg-slate-900 text-white shadow-lg hover:bg-primary hover:shadow-glow transition-all duration-300">
+                      Donate Now
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
         </motion.div>
 
-        {/* Right card — starts peeking behind center, fans right */}
+        {/* Right card */}
         <motion.div
-          style={{ x: rightX, rotate: rightRotate, zIndex: 10 }}
-          className="absolute w-[300px] h-[420px] bg-white rounded-[2rem] shadow-soft-md border border-slate-100 overflow-hidden group hover:border-orange-200 flex flex-col"
+          style={{
+            x: rightX,
+            rotate: rightRotate,
+            zIndex: rightZ,
+            position: "relative",
+          }}
+          className="w-full xl:w-[300px] flex-shrink-0"
         >
-          <SideCardContent
+          <SideCard
             campaign={rightCard}
+            tilt="right"
             progress={getProgress(rightCard.raised, rightCard.goal)}
           />
         </motion.div>
