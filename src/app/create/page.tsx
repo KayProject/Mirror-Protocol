@@ -7,12 +7,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useStacks } from "@/components/fundx/StacksProvider";
 import { toast } from "sonner";
-
-// IMPORT MODULES
 import { WizardSteps } from "@/components/create/WizardSteps";
 import { LivePreview } from "@/components/create/LivePreview";
 
-// 🚨 THIS IS OUR VIP LIST (Strict Types)
+
 export interface CreateCampaignData {
   creatorName: string;
   creatorBio: string;
@@ -25,14 +23,13 @@ export interface CreateCampaignData {
   image: string;
   goal: string;
   duration: string;
-  fundingModel: "0" | "1"; // 0 is Flexible, 1 is All-or-Nothing
+  fundingModel: "0" | "1"; 
 }
 
 export default function CreateCampaign() {
   const { isSignedIn, authenticate } = useStacks();
   const [step, setStep] = useState(1);
 
-  // 🚨 WE NOW TELL REACT TO STRICTLY USE OUR VIP LIST
   const [formData, setFormData] = useState<CreateCampaignData>({
     creatorName: "",
     creatorBio: "",
@@ -45,7 +42,7 @@ export default function CreateCampaign() {
     image: "/campaign-1.jpg",
     goal: "10000",
     duration: "30",
-    fundingModel: "0", // Defaulting to the Flexible model
+    fundingModel: "0", 
   });
 
 

@@ -5,9 +5,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Rocket } from "lucide-react"
-import { CreateCampaignData } from "@/app/create/page" // 🚨 IMPORTING THE VIP LIST
+import { CreateCampaignData } from "@/app/create/page" 
 
-// 🚨 NO MORE "ANY". WE USE OUR STRICT TYPE NOW.
+
 interface WizardProps {
   step: number
   formData: CreateCampaignData
