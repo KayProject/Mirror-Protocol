@@ -75,22 +75,37 @@ export function WizardSteps({ step, formData, setFormData }: WizardProps) {
   }
 
   // STEP 3: BASICS
+ // STEP 3: BASICS
   if (step === 3) {
     return (
       <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
          <div className="mb-6">
             <h2 className="text-2xl font-bold text-slate-900">Project Basics</h2>
-            <p className="text-slate-500 text-sm">Define what you are building.</p>
+            <p className="text-slate-500 text-sm">Define what you are building and give it a face.</p>
          </div>
          <div className="space-y-6">
             <div className="space-y-2">
                <Label>Project Title</Label>
                <Input placeholder="e.g. Stacks DeFi Academy" className="h-14 rounded-xl text-lg font-bold" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} />
             </div>
-            <div className="space-y-2">
-               <Label>Short Tagline</Label>
-               <Input placeholder="Explain it in one catchy sentence..." className="h-14 rounded-xl" value={formData.tagline} onChange={(e) => setFormData({...formData, tagline: e.target.value})} />
+            
+            <div className="grid md:grid-cols-2 gap-5">
+               <div className="space-y-2">
+                  <Label>Short Tagline</Label>
+                  <Input placeholder="Explain it in one catchy sentence..." className="h-14 rounded-xl" value={formData.tagline} onChange={(e) => setFormData({...formData, tagline: e.target.value})} />
+               </div>
+               {/* 🚨 NEW: CAMPAIGN COVER IMAGE INPUT */}
+               <div className="space-y-2">
+                  <Label>Cover Image URL</Label>
+                  <Input 
+                     placeholder="https://example.com/image.png" 
+                     className="h-14 rounded-xl" 
+                     value={formData.image === "/campaign-1.jpg" ? "" : formData.image} 
+                     onChange={(e) => setFormData({...formData, image: e.target.value})} 
+                  />
+               </div>
             </div>
+
             <div className="grid md:grid-cols-2 gap-5 mt-4">
               <div className="space-y-2">
                  <Label>Category</Label>
@@ -120,7 +135,6 @@ export function WizardSteps({ step, formData, setFormData }: WizardProps) {
       </div>
     )
   }
-
   // STEP 4: THE STORY (Massive text box)
   if (step === 4) {
     return (
