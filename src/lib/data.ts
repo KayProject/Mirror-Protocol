@@ -1,3 +1,5 @@
+import { on } from "events";
+
 export interface Campaign {
   id: string;
   title: string;
@@ -104,7 +106,7 @@ export const CAMPAIGNS: Campaign[] = [
   {
     id: "bitcoin-city",
     title: "Bitcoin City Initiative",
-    tagline: 'Infrastructure for the Bitcoin Economy."
+    tagline: "Infrastructure for the Bitcoin Economy.",
     description:  "Developing urban infrastructure powered by Bitcoin mining heat recycling. A model for sustainable cities.",
     category: "Social Impact",
     projectStage: "Idea",
@@ -121,7 +123,7 @@ export const CAMPAIGNS: Campaign[] = [
     portfolio: "citydao.com",
     videoUrl: "https://vimeo.com/demo",
     budgetBreakdown: "80% Hardware Procurement, 20% Land Lease",
-    roadmap: "Month 1: Secure Land. Month 2: Install Solar Array. Month 3: Deploy ASICs.",
+    roadmap: "Month 1: Secure Land. Month 2: Install Solar Array. Month 3: Deployaggregator on Stacks.",
     daysLeft: 120,
     backers: 450,
     isTrending: false
@@ -132,12 +134,21 @@ export const CAMPAIGNS: Campaign[] = [
     tagline: "An MMORPG where every item is a Bitcoin NFT. Play, earn, and own your assets on the most secure chain.",
     description: "An MMORPG where every item is a Bitcoin NFT. Play, earn, and own your assets on the most secure chain.",
     category: "Gaming",
+    projectStage: "Idea",
     location: "Seoul, South Korea",
     raised: 8000,
     goal: 60000,
+    currency: "USDCx",
     image: "/campaign-5.jpg",
     creator: "PolyLabs",
     creatorImage: "https://github.com/shadcn.png",
+    creatorBio: "Renewable energy experts turning stranded solar power into hash rate.",
+    twitter: "@PolyLabs",
+    github: "github.com/polylabs",
+    portfolio: "polylabs.com",
+    videoUrl: "https://vimeo.com/demo",
+    budgetBreakdown: "80% Hardware Procurement, 20% Land Lease",
+    roadmap: "Month 1: Secure Land. Month 2: Install Solar Array. Month 3: Deploy ASICs.",
     daysLeft: 29,
     backers: 120,
     isTrending: false
@@ -145,14 +156,24 @@ export const CAMPAIGNS: Campaign[] = [
   {
     id: "liquid-ops",
     title: "Liquid Ops",
+    tagline: "Decentralized dev-ops tooling for Clarity smart contracts. Automate your deployments with 100% uptime.",
     description: "Decentralized dev-ops tooling for Clarity smart contracts. Automate your deployments with 100% uptime.",
     category: "Infrastructure",
+    projectStage: "Idea",
     location: "Berlin, Germany",
     raised: 14200,
     goal: 30000,
+    currency: "USDCx",
     image: "/campaign-6.jpg",
     creator: "OpsTeam",
     creatorImage: "https://github.com/shadcn.png",
+    creatorBio: "Renewable energy experts turning stranded solar power into hash rate.",
+    twitter: "@OpsTeam",
+    github: "github.com/opsteam",
+    portfolio: "opsteam.com",
+    videoUrl: "https://vimeo.com/demo",
+    budgetBreakdown: "80% Hardware Procurement, 20% Land Lease",
+    roadmap: "Month 1: Secure Land. Month 2: Install Solar Array. Month 3: Deploy ASICs.",
     daysLeft: 5,
     backers: 89,
     isTrending: false
