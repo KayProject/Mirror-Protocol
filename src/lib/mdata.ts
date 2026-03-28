@@ -1,28 +1,4 @@
-export interface Campaign {
-  id: string;
-  title: string;
-  tagline: string;
-  description: string;
-  category: string;
-  projectStage: string;
-  location: string;
-  raised: number;
-  goal: number;
-  currency: "USDCx" | "STX";
-  image: string;
-  creator: string;
-  creatorImage: string;
-  creatorBio: string;
-  twitter: string;
-  github: string;
-  portfolio: string;
-  videoUrl: string;
-  budgetBreakdown: string;
-  roadmap: string;
-  daysLeft: number;
-  backers: number;
-  isTrending?: boolean;
-}
+
 
 export const CAMPAIGNS: Campaign[] = [
   {

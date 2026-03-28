@@ -4,6 +4,7 @@ export interface Campaign {
     tagline: string;
   description: string;
   category: string;
+    projectStage: string;
   location: string;
   raised: number;
   goal: number;
@@ -49,17 +50,27 @@ export const CAMPAIGNS: Campaign[] = [
     backers: 340,
     isTrending: false
   },
-  {
+ {
     id: "defi-for-everyone",
     title: "DeFi for Everyone",
-    description: "The first mobile-first yield aggregator on Stacks. Democratizing finance for the 99% with simple UX and trustless strategies.",
+    tagline: "The first mobile-first yield aggregator on Stacks.",
+    description: "Democratizing finance for the 99% with simple UX and trustless strategies. We abstract away the complex bridging and routing, letting users earn native Bitcoin yield with one tap.",
     category: "DeFi",
+    projectStage: "Prototype",
     location: "Lagos, Nigeria",
     raised: 45000,
     goal: 50000,
+    currency: "STX",
     image: "/campaign-1.jpg",
     creator: "Alex Smith",
     creatorImage: "https://github.com/shadcn.png",
+    creatorBio: "Senior protocol engineer. 5 years building DeFi legos across Ethereum and Stacks.",
+    twitter: "@AlexBuilds",
+    github: "github.com/alexsmith",
+    portfolio: "alexsmith.dev",
+    videoUrl: "",
+    budgetBreakdown: "70% Smart Contract Audits, 30% Frontend Development",
+    roadmap: "Q1: Testnet Launch. Q2: Security Audit. Q3: Mainnet TGE.",
     daysLeft: 14,
     backers: 1240,
     isTrending: true 
@@ -67,14 +78,24 @@ export const CAMPAIGNS: Campaign[] = [
   {
     id: "green-mining",
     title: "Green Mining",
-    description: "Solar-powered Bitcoin mining initiative in Texas. Carbon neutral production ensuring the future of sustainable POW.",
+    tagline: "Solar-powered Bitcoin mining initiative.",
+    description: "Carbon neutral production ensuring the future of sustainable POW. We are setting up a 5MW solar farm strictly dedicated to mining Bitcoin and securing the Stacks network.",
     category: "Mining",
+    projectStage: "Idea",
     location: "Austin, TX",
     raised: 5000,
     goal: 25000,
+    currency: "USDCx",
     image: "/campaign-3.jpg",
     creator: "EcoBit",
     creatorImage: "https://github.com/shadcn.png",
+    creatorBio: "Renewable energy experts turning stranded solar power into hash rate.",
+    twitter: "@EcoBit",
+    github: "",
+    portfolio: "ecobit.io",
+    videoUrl: "https://vimeo.com/demo",
+    budgetBreakdown: "80% Hardware Procurement, 20% Land Lease",
+    roadmap: "Month 1: Secure Land. Month 2: Install Solar Array. Month 3: Deploy ASICs.",
     daysLeft: 21,
     backers: 85,
     isTrending: false
@@ -83,6 +104,7 @@ export const CAMPAIGNS: Campaign[] = [
   {
     id: "bitcoin-city",
     title: "Bitcoin City Initiative",
+    tagline :'Infrastru"'
     description: "Developing urban infrastructure powered by Bitcoin mining heat recycling. A model for sustainable cities.",
     category: "Social Impact",
     location: "El Salvador",
