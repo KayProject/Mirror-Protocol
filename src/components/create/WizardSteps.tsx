@@ -233,7 +233,7 @@ if (step === 3) {
          </div>
        </div>
 
-       {/* 🚨 HERE IS OUR UPDATED RULE CHOICE DROPDOWN */}
+     
        <div className="space-y-2 mt-4">
          <Label>Funding Model</Label>
          <Select

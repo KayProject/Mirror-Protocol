@@ -11,7 +11,7 @@ import { toast } from "sonner"
 import { WizardSteps } from "@/components/create/WizardSteps"
 import { LivePreview } from "@/components/create/LivePreview"
 
-// 🚨 OUR EXPANDED VIP LIST
+
 export interface CreateCampaignData {
   creatorName: string;
   creatorBio: string;
@@ -37,7 +37,7 @@ export default function CreateCampaign() {
   const { isSignedIn, authenticate } = useStacks()
   const [step, setStep] = useState(1)
   
-  // 🚨 ADD THE NEW FIELDS AS EMPTY TEXT SO THE APP DOESN'T CRASH
+
   const [formData, setFormData] = useState<CreateCampaignData>({
     creatorName: "",
     creatorBio: "",
