@@ -11,7 +11,7 @@ interface CampaignCardProps {
   raised: number
   goal: number
   image: string
-  currency?: "USDCx" | "STX" // 🚨 NEW: Tell the card which currency to use
+  currency?: "USDCx" | "STX" 
 }
 
 export function CampaignCard({ id, title, description, raised, goal, image, currency = "USDCx" }: CampaignCardProps) {
@@ -41,7 +41,7 @@ export function CampaignCard({ id, title, description, raised, goal, image, curr
 
           <div className="space-y-2">
             <div className="flex justify-between text-sm font-medium">
-              {/* 🚨 UPDATED: Using our formatted numbers */}
+            
               <span className="text-primary font-bold">{formattedRaised}</span>
               <span className="text-slate-400">of {formattedGoal}</span>
             </div>
