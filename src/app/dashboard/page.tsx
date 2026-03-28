@@ -1,0 +1,77 @@
+"use client"
+
+import { Navbar } from "@/components/fundx/Navbar"
+import { Footer } from "@/components/fundx/Footer"
+import { useStacks } from "@/components/fundx/StacksProvider"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
+import { LayoutDashboard, Wallet } from "lucide-react"
+
+export default function DashboardPage() {
+  const { isSignedIn, authenticate } = useStacks()
+
+
+  if (!isSignedIn) {
+    return (
+      <main className="min-h-screen bg-slate-50 font-sans">
+        <Navbar />
+        <div className="container mx-auto max-w-4xl px-4 pt-48 pb-20 text-center">
+           <Wallet className="w-16 h-16 text-slate-300 mx-auto mb-6" />
+           <h1 className="text-3xl font-bold text-slate-900 mb-4">Connect your wallet</h1>
+           <p className="text-slate-500 mb-8">You need to connect your Stacks wallet to view your dashboard.</p>
+           <Button onClick={authenticate} size="lg" className="h-12 px-8 rounded-xl bg-slate-900 text-white hover:scale-105 transition-transform">
+             Connect Wallet
+           </Button>
+        </div>
+        <Footer />
+      </main>
+    )
+  }
+
+
+  return (
+    <main className="min-h-screen bg-slate-50 font-sans">
+      <Navbar />
+      
+      <div className="container mx-auto max-w-6xl px-4 pt-32 pb-20">
+        
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-10">
+           <div className="p-3 bg-white rounded-2xl shadow-sm border border-slate-100">
+             <LayoutDashboard className="w-6 h-6 text-orange-500" />
+           </div>
+           <h1 className="text-4xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+        </div>
+
+        {/* The Tabs (Creator vs Backer) */}
+        <Tabs defaultValue="campaigns" className="w-full">
+          <TabsList className="bg-transparent border-b border-slate-200 rounded-none w-full justify-start h-auto p-0 mb-8 overflow-x-auto no-scrollbar">
+            <TabsTrigger value="campaigns" className="rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:text-orange-600 px-6 py-3 text-base font-bold">
+              My Campaigns
+            </TabsTrigger>
+            <TabsTrigger value="contributions" className="rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:text-orange-600 px-6 py-3 text-base font-bold">
+              My Contributions
+            </TabsTrigger>
+          </TabsList>
+          
+          {/* Creator View Placeholder */}
+          <TabsContent value="campaigns">
+             <div className="bg-white p-12 text-center rounded-[2rem] border border-slate-100 shadow-sm">
+                <p className="text-slate-500 text-lg">We will build the Creator view here in Step 2!</p>
+             </div>
+          </TabsContent>
+          
+          {/* Backer View Placeholder */}
+          <TabsContent value="contributions">
+             <div className="bg-white p-12 text-center rounded-[2rem] border border-slate-100 shadow-sm">
+                <p className="text-slate-500 text-lg">We will build the Backer view here in Step 3!</p>
+             </div>
+          </TabsContent>
+        </Tabs>
+
+      </div>
+      
+      <Footer />
+    </main>
+  )
+}
