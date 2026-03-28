@@ -74,7 +74,6 @@ export function WizardSteps({ step, formData, setFormData }: WizardProps) {
     )
   }
 
-  // STEP 3: BASICS
  // STEP 3: BASICS
   if (step === 3) {
     return (
@@ -100,7 +99,7 @@ export function WizardSteps({ step, formData, setFormData }: WizardProps) {
                   <Input 
                      placeholder="https://example.com/image.png" 
                      className="h-14 rounded-xl" 
-                     value={formData.image === "/campaign-1.jpg" ? "" : formData.image} 
+                     value={formData.image === "/Dummy.jpg" ? "" : formData.image} 
                      onChange={(e) => setFormData({...formData, image: e.target.value})} 
                   />
                </div>
