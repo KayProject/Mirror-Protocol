@@ -51,7 +51,7 @@ export function CreatorTab() {
        {/* 2. ACTIVE CAMPAIGN */}
        <div className="bg-white p-8 md:p-10 min-h-[240px] rounded-[2rem] border border-slate-200 shadow-[0_12px_28px_-6px_rgba(15,23,42,0.08)] flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden hover:-translate-y-1 transition-transform duration-300">
           
-          <div className="absolute -right-4 -bottom-10 text-[130px] font-black text-orange-50 opacity-80 z-0 select-none pointer-events-none tracking-tighter leading-none">
+          <div className="absolute -right-4 -bottom-10 text-[130px] font-black text-orange-50  z-0 select-none pointer-events-none tracking-tighter leading-none">
              ACTIVE
           </div>
           <Rocket strokeWidth={1} className="absolute right-10 -bottom-10 w-80 h-80 text-orange-500 opacity-[0.04] z-0 pointer-events-none transform -rotate-12" />
